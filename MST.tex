@@ -1,0 +1,428 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[croatian]{babel}
+\usepackage[cp1250]{inputenc}
+\usepackage{amsfonts}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+
+\newtheorem{nap}{Napomena}
+\newtheorem{tm}{Teorem}
+\newtheorem{df}{Definicija}
+\newtheorem{lm}{Lema}
+\newtheorem{pr}{Primjer}
+\newtheorem{tv}{Tvrdnja}
+\setcounter{section}{+0}
+\renewcommand{\refname}{Literatura}
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+\textsc{\large {SVEU\v{C}ILI\v{S}TE U ZAGREBU\\ PRIRODOSLOVNO - MATEMATI\v{C}KI FAKULTET\\  MATEMATI\v{C}KI ODSJEK}}\\[6.0cm]
+
+
+\textsc{\Large {Kvantno ra\v{c}unanje}}\\[0.5cm]
+\textsc{\huge\bfseries \Large MINIMALNO RAZAPINJU\'CE STABLO} \\[1.0cm]
+\textsc{\Large {SEMINAR}}\\[0.5cm]
+
+\vfill
+
+
+\noindent
+\begin{minipage}[t]{25cm}
+\large{Fran Vojkovi\'c}\newline
+\large{Alen \v{Z}ivkovi\'c}\newline
+\end{minipage}
+
+\large{velja\v{c}a, 2020.}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Uvod}
+
+Primarni cilj teorije kvantnog ra\v{c}unanja je odrediti u kojim slu\v{c}ajevima kvantna ra\v{c}unala omogu\'cuju br\v{z}e izvr\v{s}avanje algoritama od klasi\v{c}nih ra\v{c}unala. U seminaru promatramo problem nala\v{z}enja \emph{minimalnog razapinju\'ceg stabla (MST \footnote{Minimum spanning tree})} opisanog u poglavlju 2, gdje smo naveli dva klasi\v{c}na algoritma, \emph{Primov} i \emph{Kruskalov} algoritam, za navedeni problem. Poglavlje 3 sadr\v{z}i terminologiju potrebnu za formulaciju i analizu slo\v{z}enosti kvantnog algoritma opisanog u poglavlju 4. Kvantni algoritam temeljimo na \emph{Boruvka} algoritmu. Tako\dj{}er, u poglavlju 4.2 promatramo problem povezanosti grafa koji je poseban slu\v{c}aj problema MST-a u kojem su nam sve te\v{z}ine jednake te nas zanima postoji li podgraf u kojem postoji put izme\dj{}u svaka dva vrha.  
+
+\newpage
+
+\section{Standardni algoritmi za MST}
+
+Neka je $G=(V,E)$ povezan neusmjeren graf sa skupom vrhova  $V$ i skupom bridova $E$. Svaki brid ima nenegativnu duljinu.
+
+\paragraph{Problem MST:}
+Treba na\'ci podskup  $T$ grafa $G$ tako da svi vrhovi ostanu povezani samo sa bridovima iz $T$ i da je zbroj duljina (cijene) bridova u $T$ najmanji mogu\'c.
+Uo\v{c}imo da je podgraf $(V,T)$ grafa $G$ \emph{stablo}, tj. povezan graf bez ciklusa. Taj graf zovemo minimalno razapinju\'ce stablo grafa $G$.
+
+\paragraph{}
+Predstavit \'cemo dva standardna pohlepna algoritma za rje\v{s}avanje navedenog problema. Uvodimo sljede\'cu terminologiju koja \'ce nam trebati za dokaz korektnosti algoritama.
+
+\begin{df}
+Za skup bridova ka\v{z}emo da je \textbf{dopustiv} ako ne sadr\v{z}i ciklus. Dopustiv skup bridova je \textbf{obe\'cavaju\'ci} ako se mo\v{z}e dopuniti do optimalnog rje\v{s}enja. 
+Brid $e$ \textbf{dira} skup vrhova, ako je to\v{c}no jedan kraj brida u tom skupu vrhova.
+\end{df}
+
+\begin{lm}
+Neka je $G=(V,E)$ povezan neusmjeren graf sa zadanom duljinom bridova. Neka je $B \subset V$ te $T \subseteq E$ obe\'cavaju\'ci skup bridova, takav da ni jedan brid iz $T$ ne dira $B$. Neka je $e$ najkra\'ci brid koji dira $B$.
+
+Tada je i skup $ T \cup \{e\}$ obe\'cavaju\'ci.
+\end{lm}
+
+\paragraph{Dokaz:}
+$T$ je obe\'cavaju\'ci po pretpostavci pa postoji minimalno razapinju\'ce stablo $U$ grafa $G$ takvo da je $T \subseteq U$.
+
+Ako je $e \in U$ tvrdnja vrijedi.
+U suprotnom, $e \notin U$ kada brid $e$ dodamo u $U$ onda nastaje jedan ciklus, jer je $U$ stablo.
+Kako $e$ dira $B$, mora postojati bar jo\@{s} jedan brid $\tilde{e} $ koji tako\dj{}er dira $B$ (u suprotnom se ciklus ne zatvara). Ako izbacimo $\tilde{e} $, ciklus nestaje i dobivamo novo stablo $\tilde{U} $ koje razapinje graf $G$.
+No po pretpostavci, duljina brida $e$ ne prelazi duljinu brida $\tilde{e} $ pa ukupna duljina bridova u $\tilde{U} $ ne prelazi ukupnu duljinu bridova u $U$. Tada je i $\tilde{U} $ minimalno razapinju\'ce stablo za graf $G$ i sadr\v{z}i brid $e$.
+Mora vrijedit $T \subseteq \tilde{U} $ jer $e$ ne mo\v{z}e biti u $T$ ($\tilde{e}$ dira $B$, a niti jedan brid iz $T$, po pretpostavci , ne dira $B$).
+Slijedi da je i $ T \cup \{ e \}$ obe\'cavaju\'ci u $\tilde{U} $.\\
+$\blacksquare$ 
+
+\newpage
+\subsection{Primov algoritam}
+
+Inicijaliziramo stablo $B$ s jednim proizvoljnim vrhom te skupom bridova $T$ koji je prazan.
+U svakom koraku dodajemo jedan novi brid stablu te algoritam staje kada pove\v{z}emo sve vrhove.
+U jednom koraku, algoritam nalazi najkra\'ci brid $ \{ u, v \} $ takav da je 
+\begin{equation}
+ (u \in V \setminus B)  \land  (v \in B)
+\end{equation}
+te dodaje $u$ u skup $B$ i brid $\{ u, v \} $ u skup $T$. Iz konstrukcije slijedi da bridovi u $T$ u svakom trenutku predstavljaju minimalno razapinju\'ce stablo za vrhove iz $B$.
+Postupak se nastavlja dok je $B \ne V$.
+
+Slo\v{z}enost \emph{Primovog algoritma} je $ \mathcal{O} (n^2)$.
+
+\subsection{Kruskalov algoritam}
+
+
+Neka je skup bridova $T= \o$, tj. svaki vrh grafa $G$ \v{c}ini zasebnu komponentu povezanosti. 
+
+\begin{enumerate}
+	\item Sortiramo bridove $E$ uzlazno po duljini.
+	\item Uzimamo najkra\'ci brid $e$ iz $E$.
+	\begin{enumerate}
+		\item Ako spaja dva vrha u razli\v{c}itim komponentama povezanosti, dodajemo $e$ u $T$.
+		\item Ako spaja dva vrha u istoj komponenti povezanosti, odbacujemo brid $e$.
+	\end{enumerate}
+	\item STOP ako je preostala jedna komponenta povezanosti.
+\end{enumerate}
+
+\paragraph{}
+Za povezan neusmjeren graf \emph{Kruskalov algoritam} radi korektno te je struktura pogodna za implementaciju algoritma \emph{struktura disjunktnih skupova}. Slo\v{z}enost \emph{Kruskalovog algoritma} je $ \mathcal{O} (m   log(n))$, gdje je $m$ broj bridova u grafu. 
+
+Ako je graf $G$ gust, odnosno ima mnogo bridova, slijedi $m \approx  \frac{n(n-1)}{2} $ pa je slo\v{z}enost algoritma $\mathcal{O} (n^2log(n))$, u slu\v{c}aju da je graf $G$ rijedak vrijedi $m  \approx n-1$, pa je slo\v{z}enost algoritma $ \mathcal{O}(nlog(n))$, te je \emph{Kruskalov} algoritam, bitno br\v{z}i od \emph{Primovog} algoritma.
+
+
+\newpage
+\section{Terminologija}
+
+ Neka oznaka $[n]$ predstavlja skup $\{0,1,...,n-1\}$. Graf je ure\dj{}eni par $G=(V,E)$ gdje je $V$ skup \v{c}iji se elementi zovu vrhovi, a $E\subseteq V\times V$ skup \v{c}iji se elementi zovu bridovi. Promatramo dva modela za usmjerene grafove.
+
+\begin{df}
+\textbf{Model matrice susjedstva}, u kojem je graf dan kao matrica susjedstva $M\in\{0,1\}^{n\times n}$, gdje $M_{ij}=1$ 
+	ako i samo ako $(v_i,v_j)\in V$.
+
+\end{df}
+
+\subparagraph{Primjer:}
+		\begin{equation*}
+		\left[
+		\begin{matrix}
+			0 & 1 & 0 \\
+			1 & 1 & 0 \\
+			0 & 0 & 1
+		\end{matrix}
+		\right]
+		\end{equation*}
+		Iz ove se matrice susjedstva da i\v{s}\v{c}itati da su u na\v{s}em grafu prisutni bridovi
+		$(v_0,v_1)$, $(v_1,v_0)$, $(v_1,v_1)$ i $(v_2,v_2)$.
+
+\begin{df}
+	\textbf{Vektorski model}, gdje za svaki vrh $v_i$ imamo broj njegovih susjeda $d_1,d_2,...,d_n$ te polje njegovih	susjeda $f_i[d_i]\rightarrow[n]$. Dakle, $f_i(j)$ vra\'ca $j$-tog susjeda vrha $v_i$ po nekom proizvoljnom, ali fiksnom, numeriranju susjeda. Smatramo da su vrijednosti $d_i$ dane unosom za svaki $i$ pa ra\v{c}unamo samo pozive funkcija $f_i$.
+\end{df}
+
+Tako\dj{}er, funkcije zadovoljavaju
+	\begin{equation*}
+		(\forall i\in[n])(j,j'\in[d_i])\text{ t.d. } j\neq j':f_i(j)\neq f_i(j')
+	\end{equation*}
+	Dakle, graf nije multigraf, tj. nema vi\v{s}e od jednog brida izme\dj{}u bilo koja dva vrha.
+	\\
+		Jedan od alata koji \'ce nam biti potreban u realizaciji kvantnog algoritma za minimalno razapinju\'ce
+		stablo je algoritam za pronala\v{z}enje $d$ najmanjih vrijednosti razli\v{c}itog tipa. Problem glasi ovako:
+
+\paragraph{\emph{ Problem nala\v{z}elja d najmanjih (razli\v{c}itih) vrijednosti}:\\} 			
+ 			Imamo dvije funkcije $f$,$g$ i cijeli broj $d'$ te \v{z}elimo prona\'ci cijeli broj $d=min\{d',e\}$ i 
+			podskup $I\subseteq[N]$ kardinalnosti $d$ takav da $g(i)\neq g(i')$ za sve razli\v{c}ite $i,i'\in I$ 
+			i da za sve $j\in[N]\setminus I$ i $i\in I$, ako $f(j)<f(i)$ onda $f(i')\leq f(j)$ za neki 
+			$i'\in I$ takav da $g(i')=g(j)$.\\
+			
+
+
+Sljede\'ci teorem daje nam donju ogradu za slo\v{z}enost algoritma za  \emph{ problem nala\v{z}elja d najmanjih (razli\v{c}itih) vrijednosti}.
+\newpage
+\begin{tm}
+	Donja granica slo\v{z}enosti za \textbf{Problem nala\v{z}enja d  najmanjih (razli\v{c}itih) vrijednosti} je $ \Omega ( \sqrt{dN} )$.
+\end{tm}
+\paragraph{Dokaz:}
+Za $k$ paran i $d$ neparan promatramo matrice  $C \in M_{d,k}(\{ 0,1 \})$ koje u svakom retku imaju to\v{c}no jednu $0$. Takve matrice opisuju funkciju $f: \{0,1, ..., N-1 \} \rightarrow \{0, 1 \} $ tako da
+\begin{equation*}	
+	 \forall i \in \{0, 1, ..., d-1 \}, j \in \{0, 1, ..., k-1 \} \text{ ,   } f(id + j) = C_{i,j}
+\end{equation*}
+Neka je $g: \{0,1, ..., N-1 \} \rightarrow \{0, 1, ..., d \} $ takva da
+\begin{equation*}
+    g(id+j) = \begin{cases}
+               i              &, \text{  ako     }f(id+j)=0\\
+               d			  &, \text{  ina\v{c}e}
+           \end{cases}
+\end{equation*}
+Sada je problem nala\v{z}enja $d+1$ najmanjih vrjdenosti ekvivalentan nala\v{z}enju pozicija $d$ nula u matrici $C$.
+Neka je 
+\begin{equation*}
+ X := \{ A \in M_{d,k}(\{ 0,1 \}) : \text{ to\v{c}no } \floor{d/2} \text{ redaka ima } 0 \text{ u prvih } k/2 \text{ stupaca } \}
+\end{equation*}
+\begin{equation*}
+ Y := \{ A \in M_{d,k}(\{ 0,1 \}) : \text{ to\v{c}no } \ceil{d/2} \text{ redaka ima } 0 \text{ u prvih } k/2 \text{ stupaca } \}
+\end{equation*}
+
+Ka\v{z}emo da je matrica $A \in X$ u relaciji sa matricom $B \in Y$ ako i samo ako se razlikuju na to\v{c}no dva mjesta.
+
+Iz navedenog slijedi da $ \exists i \in \{0, 1, ..., d-1 \}$, $0 \leq j < k/2 \leq \tilde{j} <k $ t.d. $A_{i,j}=B_{i, \tilde{j}} = 1 \land A_{i, \tilde{j} }=B_{i,j}=0$. Npr.
+\begin{equation*}
+	A=	\left[
+		\begin{matrix}
+			0 & 1 & 1 & 1 & 1 & 1\\
+			1 & 1 & 1 & 1 & 1 & 0\\
+			1 & 1 & 1 & 0 & 1 & 1
+		\end{matrix}
+		\right]
+	 B=	\left[
+		\begin{matrix}
+			0 & 1 & 1 & 1 & 1 & 1\\
+			1 & 1 & 1 & 1 & 1 & 0\\
+			1 & 1 & 1 & 1 & 0 & 1
+		\end{matrix}
+		\right]
+\end{equation*}
+Broj matrica koje su u relaciji sa fiksiranom matricom je najmanje $m= \tilde{m} = \ceil{d/2} k/2$. Za fiksirane $i,j$ broj matrica u relaciji sa $M$ koje se razlikuju u $i,j$ je $k/2$ ako $M_{i,j}=0 \text{ i } 1 \text{ ako } M_{i,j}=1$. Pa za $l_{max}=k/2$ , $\Omega( \sqrt{m \tilde{m} /l_{max}})$ daje tra\v{z}enu donju granicu slo\v{z}enosti.\\
+$\blacksquare$
+
+\subsection{Groverov algoritam}
+Prethodni problem nala\v{z}enja najmanjih vrijednosti mo\v{z}emo rijes\v{s}iti \emph{Grover}ovim algoritmom pretra\v{z}ivanja. Za navedeni algoritam potrebno je konstruirati kvantnu proro\v{c}icu koja \'ce otkriti tra\v{z}ene vrijednosti. Implementaciju kvantne proro\v{c}ice mo\v{z}emo opisati kvantnim sklopom koji okre\'ce pomo\v{c}ni qubit $q$ ako sljede\'ca funkcija iznosi $1$.
+
+\begin{equation*}
+f(\boldsymbol{x}) = \begin{cases}
+1              &, \text{  ako     } \boldsymbol{x}=\tilde{x}\\
+0			  &, \text{  ako  } \boldsymbol{x} \ne \tilde{x}
+\end{cases}
+\end{equation*}
+pri \v{c}emu je $\tilde{x}$ tra\v{z}eni element, a $ x=(x_1,x_2)$ binarna varijabla. Pri \v{c}emu koristimo \emph{Toffoli}jeva vrata koja uzimaju tri qubita te vra\'caju prva dva qubita nepromjenjena, a tre\'ci qubit obrnemo ako su prva dva qubita $1$. Implementacijom \emph{Toffoli}jevih vrata dobijemo tra\v{z}enu kvantnu proro\v{c}icu gdje nam prva dva qubita predstavlja ulazne parametre,  a tre\'ci qubit, $q$,  je pomo\'cni.
+
+
+Pona\v{s}anje na\v{s}e proro\v{c}ice op\'cenito izgleda ovako $\ket{\boldsymbol{x}}\ket{q}\rightarrow\ket{\boldsymbol{x}}\ket{f(\boldsymbol{x})\oplus q}$.
+Groverov operator je klju\v{c} za rad ovog algoritma. Definiramo ga ovako
+\begin{equation*}
+G=(2\ket{\psi}\bra{\psi}-I)O
+\end{equation*}
+gdje je $\psi$ uniformna superpozicija svih stanja, a $O$ na\v{s}a proro\v{c}ica. Djelovanje $(2\ket{\psi}\bra{\psi}-I)$ na proizvoljno stanje je
+\begin{equation}
+(2\ket{\psi}\bra{\psi}-I)\sum_{i}a_{i}\ket{i}=\sum_{i}(2\langle a \rangle-a_{i})\ket{i}
+\end{equation}
+gdje je $\langle a \rangle=\frac{\sum_{i}a_{i}}{\sum_{i}1}$ i sume idu po svim mogu\'cim stanjima. Kako bi Groverov operator uspje\v{s}no obavio pretragu, $\ket{x}\ket{q}$ moramo pravilno inicijalizirati. Primijenimo Hadamardovu transformaciju ($H^{\otimes n}$) na $\ket{x}$ i Paulijevu X transformaciju pa Hadamardovu transformaciju na $\ket{q}$. Ovo ostavlja $\ket{x}$ u uniformnoj superpoziciji svih stanja $\ket{\psi}$, a $\ket{q}$ u stanju $\frac{\ket{0}-\ket{1}}{\sqrt{2}}$.
+
+\begin{center}
+\begin{quantikz}
+\lstick{$\ket{0}$} & \gate{H}  &\qw & \gate[wires=3]{Oracle} & \gate{H} & \gate{X} & \qw & \ctrl{1} & \qw & \gate{X} & \gate{H} & \meterD{}\\
+\lstick{$\ket{0}$} & \gate{H} &\qw & &\gate{H} & \gate{X} & \gate{H}& \targ{} & \gate{H} & \gate{X} & \gate {H} & \meterD{}\\
+\lstick{$\ket{0}$} & \gate{X} & \gate{H} & & \qw & \qw &\qw &\qw &\qw &\qw &\qw &\qw
+\end{quantikz}
+\end{center}
+\begin{center}
+\emph{Shematski dijagram Groverovog algoritma. Do proro\v{c}ice je proces inicijalizacije, a sve nakon nje (uklju\v{c}uju\'ci nju) je Groverov operator. Primijetimo da samo jednom primijenjujemo Groverov operator. Ovo je dostatno kad x sadr\v{z}i samo dva bita, ali za slo\v{z}enije se probleme primijenjuje vi\v{s}e puta.}
+\end{center}
+
+Koriste\'ci jednad\v{z}bu (2) sada vidimo kako Groverov operator radi. Primijenom proro\v{c}ice na $\ket{x^{*}}\frac{\ket{0}-\ket{1}}{\sqrt{2}}$ obrnemo amplitudu tog stanja.
+\begin{equation*}
+O\ket{x^{*}}\frac{\ket{0}-\ket{1}}{\sqrt{2}}\rightarrow \ket{x^{*}}\frac{\ket{f(x^{*})\oplus 0}-\ket{f(x^{*})\oplus 1}}{\sqrt{2}}=\ket{x^{*}}\frac{\ket{1}-\ket{0}}{\sqrt{2}}=-\ket{x^{*}}\frac{\ket{0}-\ket{1}}{\sqrt{2}}
+\end{equation*}
+Sli\v{c}nim argumentom poka\v{z}emo da sva ostala stanja ostaju nepromjenjena proro\v{c}icom. Kada ovo kombiniramo s jednad\v{z}bom (2), postaje jasno za\v{s}to Groverov operator uspje\v{s}no provodi pretragu. U op\'cenitom slu\v{c}aju Groverov bi operator trebalo primijeniti $\lceil \frac{\pi 2^{n/2}}{4} \rceil$ puta.
+\newpage
+\section{Kvantni algoritam za minimalno razapinju\'ce stablo}
+
+Neka je $G=(V,E)$ neusmjeren te\v{z}inski graf. \v{Z}elimo na\'ci  podgraf grafa $G$ bez ciklusa s maksimalnom kardinalnosti $E$ tako da podgraf ima minimalnu ukupnu te\v{z}inu.
+
+U poglavlju 2 opisali smo \emph{Primov} i \emph{Kruskalov} akgoritam, tako\dj{}er postoji i  \emph{Boruvka} algoritam koji sada koristimo. U najgorem slu\v{c}aju, \emph{Boruvka} algoritam ima $log(n)$ iteracija. Inicijaliziramo ga sa $n$ razapinju\'cih stabala, tako da svako stablo sadr\v{z}i jedan vrh iz $E$. U svakoj iteraciji algoritam nalazi brid s minimalnom te\v{z}inom  i dodaje ga u stabla, odnosno spaja ih u manje ve\'cih stabala. Nakon najvise $log(n)$ iteracija preostaje najvi\v{s}e jedno stablo koje predstavlja tra\v{z}eno minimalno razapinju\'ce stablo.
+
+\begin{tv}
+Neka je $U\subset V$, povezanog grafa $G=(V,E)$, te neka je $e$ minimalni brid po te\v{z}ini od $(U\times \tilde{U})\cap E$.\\
+Tada postoji minimalno razapinju\'ce stablo koje sadr\v{z}i brid $e$.
+\end{tv}
+
+Modificiramo standardni \emph{Boruvka} algoritam tako da kvantna verzija  \emph{Boruvka} algoritma ima najmanju vjerojatnost gre\v{s}ke. Postavimo ga tako da je u $l$-toj iteraciji vjerojatnost gre\v{s}ke najvi\v{s}e $ \frac{1}{2^{l+2}}$ pa je ukupna gre\v{s}ka najvi\v{s}e $0.25$.\\
+
+\textbf{Kvantni algoritam \emph{Boruvka}:}
+\begin{enumerate}
+	\item Neka je $T_1,T_2, ..., T_k$ razapinju\'ca \v{s}uma. Inicijalno neka je  $k=n$ i neka svaki $T_i$ sadr\v{z}i to\v{c}no jedan vrh.
+	\item Neka je $l=0$.
+	\item Dok $k\ne 1$ :
+	\begin{enumerate}
+		\item Pove\'caj $l$ za jedan.
+		\item Na\v{d}i bridove $e_1, e_2, ..., e_k$ takve da je brid $e_j$ minimalan po te\v{z}ini koji napu\v{s}ta $T_j$.
+		
+		Prekidamo ako je broj upita $(l+2)c\sqrt{km}$ za konstantu $c$.
+		\item dodaj bridove $e_j^{'}$ u stabla, spajanjem u ve\'ca stabla.
+	\end{enumerate}
+	\item Vrati razapinju\'ce stablo $T_1$.
+\end{enumerate}
+Kako bi na\v{s}li minimalne bridove u koraku (3b) koristimo sljede\'ce funkcije. 
+U vektorskom modelu svaki vrh $(u,v)$ se pojavljuje dva puta , odnosno $u$ se pojavljuje kao susjedni vrh od $v$ te $v$ kao susjedni od $u$. Numeriramo usmjerene bridove od $0$ do $2m-1$. 
+Neka je $f: [0, 1, ..., 2m-1] \rightarrow \mathbb{N} ^{*}$ funkcija koja pridru\v{z}uje svim usmjerenim bridovima $(u,v)$ njihove te\v{z}ine ako $u$ i $v$ pripadaju razli\v{c}itim stablima od trenutnog razapinju\'ceg, ina\v{c}e pridru\v{z}i $ \infty$.
+
+Neka je $g: [0, 1, ..., 2m-1] \rightarrow [0, 1, ..., k-1]$ funkcija koja pridru\v{z}uje usmjerenom bridu $(u,v)$ indeks $j$ stabla $T_j$ koje sadr\v{z}i $u$. Primijenimo algoritam za \emph{nala\v{z}enje k najmanjih vrijednosti razli\v{c}itih tipova}, prekidaju\'ci ga nakon $(l+2)c\sqrt{km}$ iteracija kako bi dobili gre\v{s}ku vjerojatnosti najvi\v{s}e $1/2^{l+2}$.
+
+\begin{tm}
+Neka je dan neusmjeren graf sa te\v{z}inama bridova. Navedenim algoritmom dobivamo razapinju\'ce stablo koje je minimalno sa vjerojatno\v{s}\'cu najmanje $1/4$. Algoritam koristi $O(\sqrt{nm})$ upita u vektorskom modelu i $O(n^{3/2})$ upita u matri\v{c}nom modelu.
+\end{tm}
+
+\paragraph{Dokaz: [za vektorski model]}
+Na po\v{c}etku $l$-te iteracije broj stabla k je najvi\v{s}e $n/2^{l-1}$ iz \v{c}ega slijedi da koristi najvi\v{s}e $(l+2)c\sqrt{nm/2^{l-1}}$ upita. Sumiramo po svim iteracijama pa je ukupan broj upita $O(\sqrt{nm})$.
+$l$-ta iteracija predstavlja gre\v{s}ku sa vjerojatnosti $\frac{1}{2^{l+2}}$ pa je ukupna vjerojatnost gre\v{s}ke $ \leq \frac{1}{4}$.
+$\blacksquare$ 
+
+\begin{nap}
+Dokaz vrijedi i za matri\v{c}ni model ako matricu promatramo kao poseban slu\v{c}aj vektorskog modela s $m=n(n-1)$ bridova.
+\end{nap}
+
+
+\begin{tm}
+Donja granica slo\v{z}enosti algoritma za tra\v{z}enje minimalnog razapinju\'ceg stabla je $\Omega (\sqrt{nm} )$.
+\end{tm} 
+\paragraph{Dokaz:\\}
+Sli\v{c}no kao i u teoremu 1 za nala\v{z}enje d najmanjih vrijednosti. Neka je $m=k(n+1)$ za $k \in \mathbb{N} $ te $M \in M_{n,k}(\mathbb{R}^+)$. Iz teorema 1, za $ d=n, N=kn$, slijedi da je donja granica za nala\v{z}enje $d$ najmanjih vrijednosti u svakom retku $\Omega(\sqrt{kn^2})$. Konstruiramo te\v{z}inski graf $G$ iz $M$ na sljede\'ci na\v{c}in. Vrhovi grafa $G$ su $V= \{ s, v_1, ..., v_k, u_1, ..., u_n \}$ gdje je $s$ korijen stabla, a $v_1, ..., v_k$ njegova djeca u prvoj razini, itd. Bridovi oblika $(s,v_i)$ imaju te\v{z}inu $0$, a $(v_i, u_j)$ te\v{z}inu $M_{i,j}$. O\v{c}ito MST sadr\v{z}i bridove te\v{z}ine $0$ koji spajaju $s$ sa $v_i$. 
+$\blacksquare$
+
+\subsection{Implementacija}
+Koristimo \emph{Grover}ov algoritam u koraku 3b \emph{Boruvka} algoritma. Neka je $N= 2^n$ te $f:\{0, 1, ..., N-1\} \rightarrow \{0,1\}$ definirana kao 
+\begin{equation*}
+f(i) = \begin{cases}
+1              &, \text{  ako    tra\v{z}imo $i$-ti element }\\
+0			  &, \text{  ina\v{c}e  } \tilde{x}
+\end{cases}
+\end{equation*}
+Definiramo Kvantnu proro\v{c}icu koja djeluje na n qubita na sljede\'ci na\v{c}in.
+\begin{equation}
+	U_f(\ket{x})=(-1)^{f(x)}\ket{x}
+\end{equation}
+Idealno bi blo kada bi implementirali $f$ kao kvantni sklop koji evaluira u 1 nakon kratkog vremena, no to ne mo\v{z}emo napraviti direktno implementiraju\'ci $f$ kako moramo provjeriti $N$ elemenata u listi. Pa implementiramo algoritam na sljede\'ci na\v{c}in
+\begin{enumerate}
+	\item  Inicijaliziramo $j$ na proizvoljno mjesto u listi.
+	\item  Ponavljamo:
+	\begin{enumerate}
+		\item  Na\dj{}i $i \leq j$ u listi.
+		\item  Postavi $j:= i$.
+	\end{enumerate}
+\end{enumerate}
+
+\begin{center}
+\begin{quantikz}
+\lstick{$\ket{0}$} &\gate{H} & \gate[wires=3]{Oracle} & \gate{H} & \gate{X} & \qw & \ctrl{1} & \qw & \gate{X} & \gate{H} & \meterD{}\\
+\lstick{$\ket{0}$} &\gate{H} & & \gate{H} & \gate{X} & \qw & \ctrl{1} & \qw & \gate{X} & \gate {H} & \meterD{}\\
+\lstick{$\ket{0}$} &\gate{H}& & \gate{H} & \gate{X} & \gate{H} & \targ{} & \gate{H} & \gate{X} & \gate{H} & \meterD{}
+\end{quantikz}
+\end{center}
+\begin{center}
+\emph{Shematski prikaz Groverovog algoritma}
+\end{center}
+
+
+
+\newpage
+\subsection{Povezanost}
+
+Problem povezanosti grafa $G$ predstavlja posebni slu\v{c}aj minimalnog razapinju\'ceg stabla. Neka je dan neusmjeren  graf $G$ sa bridovoma jednakih te\v{z}ina, odnosno bez te\v{z}ina. Predstavit \'cemo pohlepni kvantni algoritam za nala\v{z}enje MST-a u grafu $G$ sa navedenim svojstvima. Za matri\v{c}ni model algoritam \'ce u najgorem slu\v{c}aju imati slo\v{z}enost $O(n^{3/2})$, a za vektorski model slo\v{z}enost \'ce biti $O(n)$. 
+
+\begin{tm}
+	Neka je $M$ matrica susjedstva grafa $G$. Sljede\'ci algoritam vra\'ca MST nakon najvi\v{s}e $n^{3/2}$ iteracija ako je $G$ povezan graf, ina\v{c}e algoritam ne staje.
+	
+\end{tm}
+\paragraph{Algoritam za matri\v{c}ni model:}
+\begin{enumerate}
+	\item Inicijaliziramo skup bridova $A = \emptyset$.
+	\item Ponavljaj dok $A$ ne povezuje graf $G$ :
+	\begin{enumerate}
+		\item Na\dj{}i brid $e$ koji povezuje dva vrha iz razli\v{c}itih komponenti povezanosti i dodaj ga u $A$. Pritom koristimo algoritam pretra\v{z}ivanja koji vra\'ca rje\v{s}enje u $O(n^2/t)$ iteracija.
+	\end{enumerate}
+	\item Vrati $A$, skup bridova.
+\end{enumerate}
+
+\begin{tm}
+	Neka je $G$ neusmjeren graf u vektorskom modelu, sljede\'ci algoritam vra\'ca MST grafa $G$  u najvi\v{s}e $O(n)$ iteracija, ako je $G$ povezan graf, ina\v{c}e algoritam ne staje.
+\end{tm}
+
+\paragraph{Algoritam za vektorski model:}
+\begin{enumerate}
+	\item Konstruiramo set bridova $A$ na sljede\'ci na\v{c}in:
+	\begin{enumerate}
+		\item Inicijaliziramo $A =  \emptyset $.
+		\item Postavimo $S = V$ (skup vrhova koji jo\v{s} nisu u nekoj komponenti povezanosti).
+		\item Postavimo $k = 0$ (broj ve\'c konstruiranih komponenti).
+		\item Ponavljaj dok $ S \ne \emptyset $:
+		\begin{enumerate}
+			\item Uzmi vrh $v \in S$ najve\'ceg stupnja i postavi $D = \{ v \} $.
+			\item Pro\dj{}i po svim susjedima od $v$, dodaju\'ci susjede $ \omega $ u $D$ i brid $(v, \omega )$ u $A$ dok se ne dogodi jedno od sljede\'ceg:
+			\begin{enumerate}
+				\item Pro\v{s}li smo po svim susjedima od $v$ (do\v{s}li smo do kraja liste susjeda), tada inkrementiramo $k$ ($k = k+1$), postavimo $C_k = D$ i $S = S \setminus D$.
+				\item Susjedni vrh $ \omega $ je ve\'c dodjeljen nekoj komponenti $C_j$ za $j \leq k$, tada dodamo $D$ u $C_j$ i izbacimo $D$ iz $S$.
+			\end{enumerate}
+		\end{enumerate}
+		\item Vra\'camo $k, A$ te  komponente povezanosti  $C_1, ...., C_k$.
+	\end{enumerate}
+	\item Ponavljaj dok bridovi iz $A$ ne razapinju graf $G$:
+	\begin{enumerate}
+		\item Odaberemo komponentu povezanosti $C$ iz $A$ najmanjeg stupnja (tako da minimizira $ m_c = \sum_{i \in C} d_i$).
+		\item Na\dj{}i brid $e$ iz $C$ koji povezuje $C$ s nekom drugom komponentom povezanosti iz $A$ i dodaj ga u $A$. Koristimo algoritam za pretra\v{z}ivanje sa slo\v{z}eno\v{s}\'cu $O(\sqrt{m_C})$. Ako takav brid ne postoji algoritam ide u $\infty$.
+	\end{enumerate}
+	\item Vrati skup bridova $A$.
+\end{enumerate}
+
+\newpage
+\section{Zaklju\v{c}ak}
+
+U poglavlju 2 opisali smo standardne algoritme \emph{Kruskal}ov i \emph{Prim}ov kojima je najgora slo\v{z}enost $ \mathcal{O} (n^2log(n))$, odnosno $ \mathcal{O} (n^2)$. Vidimo da \emph{Boruvka} algoritam, opisan u poglavlju 4, ima bolju slo\v{z}enost u odnosu na prethodna dva algoritma. Tako\dj{}er, kvantna verzija \emph{Boruvka} algoritma daje nam pobolj\v{s}anje u vidu slo\v{z}enosti koja je $ \mathcal{O} ( \sqrt{nm} )$ u vektorskom modelu te $ \mathcal{O} (n^{3/2})$ u matri\v{c}nom modelu, gdje su nam $n$ i $m$ broj vrhova, odnosno broj bridova u grafu. Iz navedenog o\v{c}ito je pobolj\v{s}anje u kvantnom algoritmu. U ovisnosti o broju bridova $m$ proizlazi koja je implementacija pogodnija za koji graf, generalno zaklju\v{c}ujemo da nam vektorski model daje manju slo\v{z}enost te kra\'ce vrijeme izvr\v{s}avanja. 
+
+\newpage
+\begin{thebibliography}{9}
+
+	\bibitem{einstein} 
+	Michael A. Nielsen, Isaac L. Chung.
+	\textit{Quantum Computation and Quantum Information}
+	2000.	
+	
+	\bibitem{einstein} 
+	Christoph Durr, Mark Heiligman, Peter Hoyer, Mehdi Mhalla. 
+	\textit{Quantum query complexity of some graph problems}
+	2004.
+	\\\texttt{https://arxiv.org/abs/quant-ph/0401091}
+	
+	\bibitem{einstein} 
+	Patrick J. Coles, Stephan Eidenbenz, Scott Pakin, Adetokunbo Adedoyin, John Ambrosiano, Petr Anisimov, William Casper, Gopinath Chennupati, Carleton Coffrin, Hristo Djidjev, David Gunter, Satish Karra, Nathan Lemons, Shizeng Lin, Andrey Lokhov, Alexander Malyzhenkov, David Mascarenas, Susan Mniszewski, Balu Nadiga, Dan O'Malley, Diane Oyen, Lakshman Prasad, Randy Roberts, Phil Romero, Nandakishore Santhi, Nikolai Sinitsyn, Pieter Swart, Marc Vuffray, Jim Wendelberger, Boram Yoon, Richard Zamora, and Wei Zhu
+	\textit{Quantum Algorithm Implementations for Beginners}
+	2018.	
+	
+\end{thebibliography}
+
+
+
+\end{document}

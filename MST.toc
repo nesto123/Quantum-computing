@@ -1,0 +1,22 @@
+\babel@toc {croatian}{}
+\contentsline {section}{\numberline {1}Uvod}{2}{section.1}%
+\contentsline {section}{\numberline {2}Standardni algoritmi za MST}{3}{section.2}%
+\contentsline {paragraph}{Problem MST:}{3}{section*.2}%
+\contentsline {paragraph}{}{3}{section*.3}%
+\contentsline {paragraph}{Dokaz:}{3}{section*.4}%
+\contentsline {subsection}{\numberline {2.1}Primov algoritam}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Kruskalov algoritam}{4}{subsection.2.2}%
+\contentsline {paragraph}{}{4}{section*.5}%
+\contentsline {section}{\numberline {3}Terminologija}{5}{section.3}%
+\contentsline {subparagraph}{Primjer:}{5}{section*.6}%
+\contentsline {paragraph}{\emph { Problem nala\v {z}elja d najmanjih (razli\v {c}itih) vrijednosti}:\\}{5}{section*.7}%
+\contentsline {paragraph}{Dokaz:}{6}{section*.8}%
+\contentsline {subsection}{\numberline {3.1}Groverov algoritam}{6}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Kvantni algoritam za minimalno razapinju\'ce stablo}{9}{section.4}%
+\contentsline {paragraph}{Dokaz: [za vektorski model]}{10}{section*.9}%
+\contentsline {paragraph}{Dokaz:\\}{10}{section*.10}%
+\contentsline {subsection}{\numberline {4.1}Implementacija}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Povezanost}{12}{subsection.4.2}%
+\contentsline {paragraph}{Algoritam za matri\v {c}ni model:}{12}{section*.11}%
+\contentsline {paragraph}{Algoritam za vektorski model:}{12}{section*.12}%
+\contentsline {section}{\numberline {5}Zaklju\v {c}ak}{14}{section.5}%
